@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Timer</title>
+        <meta charset="utf-8" />
+        <meta name="keywords" content="Timer" />
+        <meta name="description" content="Tracker" />
+        <script src="public/js/makes/Cookie.js"></script>
+        <script src="public/js/makes/Emitter.js"></script>
+        <script src="public/js/makes/Timer.js"></script>
+        <style>
+            @import url("public/css/bootstrap.min.css");
+        </style>
+        <script>
+            window.addEventListener("load", () => {
+                const initTime = Cookie.get("time"),
+                      timer = new Timer(initTime ? parseInt(initTime) : undefined),
+                      root = document.querySelector(".time");
+
+                window.timer = timer;
+
+                root.innerHTML = timer.getTimerStr();
+
+                timer.on("step", () => {
+                    root.innerHTML = timer.getTimerStr();
+
+                    Cookie.set("time", timer.getTime());
+                });
+
+                document.querySelector("[data-evt='start']").addEventListener("click", () => {
+                    timer.start();
+                });
+
+                document.querySelector("[data-evt='stop']").addEventListener("click", () => {
+                    timer.stop();
+                });
+
+                document.querySelector("[data-evt='clear']").addEventListener("click", () => {
+                    timer.stop();
+                    timer.clear();
+
+                    root.innerHTML = timer.getTimerStr();
+                    Cookie.set("time", timer.getTime());
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center form-group">
+                    <div class="time h2"></div>
+                </div>
+
+                <div class="col-xs-6 text-right form-group">
+                    <button type="button" class="btn btn-info" data-evt="start">Start</button>
+                </div>
+
+                <div class="col-xs-6 text-left form-group">
+                    <button type="button" class="btn btn-info" data-evt="stop">Stop</button>
+                </div>
+
+                <div class="col-xs-12 text-center">
+                    <button type="button" class="btn btn-danger" data-evt="clear">Clear</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
